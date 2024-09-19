@@ -112,19 +112,21 @@ Line Plot: Illustrated the number of new customers joining the platform over tim
 
 ## Code Snippets
 1. Data Preprocessing
-   
-| *Merging Data* | python<br>transactions_full = transactions.merge(customers, on='customer_id', how='left')<br>                                .merge(branches, on='branch_id', how='left')<br>                                .merge(merchants, on='merchant_id', how='left')<br> |
+python<br>transactions_full = transactions.merge(customers, on='customer_id', how='left')<br>                                .merge(branches, on='branch_id', how='left')<br>                                .merge(merchants, on='merchant_id', how='left')<br> |
 
 2. Feature Engineering
-| *Aggregating Data* | python<br>customer_aggregated = transactions_full.groupby('customer_id').agg(<br>    transaction_count=('transaction_id', 'count'),<br>    branch_count=('branch_id', 'nunique'),<br>    merchant_count=('merchant_id', 'nunique')<br>).reset_index()<br> |
+python<br>customer_aggregated = transactions_full.groupby('customer_id').agg(<br>    transaction_count=('transaction_id', 'count'),<br>    branch_count=('branch_id', 'nunique'),<br>    merchant_count=('merchant_id', 'nunique')<br>).reset_index()<br> |
 
 3. Clustering
-| *DBSCAN Clustering* | python<br>from sklearn.cluster import DBSCAN<br><br>dbscan = DBSCAN(eps=0.5, min_samples=5)<br>customer_aggregated['dbscan_cluster'] = dbscan.fit_predict(customer_aggregated[['transaction_count', 'branch_count', 'merchant_count']])<br> |
+python<br>from sklearn.cluster import DBSCAN<br><br>dbscan = DBSCAN(eps=0.5, min_samples=5)<br>customer_aggregated['dbscan_cluster'] = dbscan.fit_predict(customer_aggregated[['transaction_count', 'branch_count', 'merchant_count']])<br> |
 
 4. Visualization
-| *Scatter Plot of Transactions vs. Total Transaction Value* | python<br>import matplotlib.pyplot as plt<br>import seaborn as sns<br><br># Scatter Plot of Transactions vs. Total Transaction Value<br>plt.figure(figsize=(10, 6))<br>sns.scatterplot(x='transaction_count', y='total_transaction_value', data=customer_aggregated, hue='dbscan_cluster', palette='viridis')<br>plt.title('Transactions vs Transaction Value per Customer')<br>plt.xlabel('Number of Transactions')<br>plt.ylabel('Total Transaction Value')<br>plt.show()<br> |
-| *Distribution of Branches per Customer* | python<br># Distribution of Branches per Customer<br>plt.figure(figsize=(10, 6))<br>sns.barplot(x=customer_aggregated['branch_count'].value_counts().index, y=customer_aggregated['branch_count'].value_counts().values, color='blue')<br>plt.title('Distribution of Branches per Customer')<br>plt.xlabel('Number of Branches')<br>plt.ylabel('Number of Customers')<br>plt.show()<br> |
-| *Number of Customers by Join Date* | python<br># Number of Customers by Join Date<br>customer_join_date = customer_aggregated.groupby(customer_aggregated['join_date'].dt.to_period('M'))['customer_id'].count().reset_index()<br>plt.figure(figsize=(10, 6))<br>sns.lineplot(x='join_date', y='customer_id', data=customer_join_date, marker='o', color='purple')<br>plt.title('Number of Customers by Join Date')<br>plt.xlabel('Join Date (Month)')<br>plt.ylabel('Number of Customers')<br>plt.show()<br> |
+python<br>import matplotlib.pyplot as plt<br>import seaborn as sns<br><br># Scatter Plot of Transactions vs. Total Transaction Value<br>plt.figure(figsize=(10, 6))<br>sns.scatterplot(x='transaction_count', y='total_transaction_value', data=customer_aggregated, hue='dbscan_cluster', palette='viridis')<br>plt.title('Transactions vs Transaction Value per Customer')<br>plt.xlabel('Number of Transactions')<br>plt.ylabel('Total Transaction Value')<br>plt.show()<br> |
+
+python<br># Distribution of Branches per Customer<br>plt.figure(figsize=(10, 6))<br>sns.barplot(x=customer_aggregated['branch_count'].value_counts().index, y=customer_aggregated['branch_count'].value_counts().values, color='blue')<br>plt.title('Distribution of Branches per Customer')<br>plt.xlabel('Number of Branches')<br>plt.ylabel('Number of Customers')<br>plt.show()<br> |
+
+
+python<br># Number of Customers by Join Date<br>customer_join_date = customer_aggregated.groupby(customer_aggregated['join_date'].dt.to_period('M'))['customer_id'].count().reset_index()<br>plt.figure(figsize=(10, 6))<br>sns.lineplot(x='join_date', y='customer_id', data=customer_join_date, marker='o', color='purple')<br>plt.title('Number of Customers by Join Date')<br>plt.xlabel('Join Date (Month)')<br>plt.ylabel('Number of Customers')<br>plt.show()<br> |
 | *Transaction Value Distribution by Gender* | python<br># Transaction Value Distribution by Gender<br>plt.figure(figsize=(10, 6))<br>sns.boxplot(x='gender_name', y='transaction_value', data=transactions_full, palette='muted')<br>plt.title('Transaction Value Distribution by Gender')<br>plt.xlabel('Gender')<br>plt.ylabel('Transaction Value')<br>plt.show()<br> |
 
 
